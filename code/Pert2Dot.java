@@ -158,8 +158,7 @@ private static java.util.List<Edge> edges;
 		// TODO Auto-generated method stub
 		// single start node
 		// single end node
-<<<<<<< HEAD
-		// not asyclic
+		// not acyclic
 		Boolean foundStart = false;
 		Boolean foundEnd = false;
 		for (String key:nodes.keySet()) {
@@ -179,9 +178,6 @@ private static java.util.List<Edge> edges;
 				foundEnd = true;
 			}
 		}
-=======
-		// not acyclic
->>>>>>> d021074e7e32c922cc6f87142a72294c0da07f72
 		
 		return foundStart && foundEnd;
 	}

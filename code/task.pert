@@ -1,5 +1,5 @@
 start,0
-task2,3
+task2,3,start,task4
 task1,4,start
 task3,2,task1,task2
 task4,1,task1
