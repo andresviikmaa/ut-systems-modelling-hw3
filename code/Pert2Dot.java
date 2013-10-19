@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.io.FileOutputStream;
 import java.io.BufferedWriter;
@@ -31,9 +30,10 @@ private static java.util.List<Edge> edges;
 	/* Load input file and parse*/
 		if (args.length > 1) {
 			LoadPertFile(args[0]);
-			if (ValidateGraph()) {
-			   CalculateCriticalPath();
+			if (ValidateGraph() && CalculateCriticalPath()) {
 			   GenerateDotFile(args[1]);
+			}else{
+				System.out.println("Invalid input file");
 			}
 		}
 	}
@@ -69,7 +69,7 @@ private static java.util.List<Edge> edges;
 	}
 	
 	
-	private static void CalculateCriticalPath( ) {
+	private static Boolean CalculateCriticalPath( ) {
 		HashMap<Node,Integer> inedges = new HashMap<Node,Integer>();
 		
 		for (Node node:nodes.values()){
@@ -80,6 +80,7 @@ private static java.util.List<Edge> edges;
 		ArrayList<Node> order = new ArrayList<Node>(); 
 		
 		while (inedges.keySet().size() > 0){
+			int prevlen = inedges.size();
 			for (Node node: inedges.keySet()){
 				if (inedges.get(node) == 0){
 					order.add(node);
@@ -90,6 +91,11 @@ private static java.util.List<Edge> edges;
 					inedges.remove(node);
 					break;
 				}
+				
+			}
+			if (inedges.size() == prevlen){
+				//there is a cycle
+				return false;
 			}
 		}
 
@@ -141,6 +147,7 @@ private static java.util.List<Edge> edges;
 				node.setOn_critical_path(true);
 			}
 		}
+		return true;
 		
 		
 		
@@ -151,7 +158,7 @@ private static java.util.List<Edge> edges;
 		// TODO Auto-generated method stub
 		// single start node
 		// single end node
-		// not asyclic
+		// not acyclic
 		
 		return true;
 	}
