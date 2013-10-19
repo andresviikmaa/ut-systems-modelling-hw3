@@ -1,15 +1,18 @@
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.io.FileOutputStream;
 import java.io.BufferedWriter;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.List;
 import java.io.Writer;
 import java.io.File;
 import java.io.OutputStreamWriter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+
+import java.util.Collections;
 
 public class Pert2Dot
 {
@@ -27,16 +30,17 @@ private static java.util.List<Edge> edges;
 	/* Load input file and parse*/
 		if (args.length > 1) {
 			LoadPertFile(args[0]);
-			if (ValidateGraph()) {
-			   CalculateCriticalPath();
+			if (ValidateGraph() && CalculateCriticalPath()) {
 			   GenerateDotFile(args[1]);
+			}else{
+				System.out.println("Invalid input file");
 			}
 		}
 	}
 
 	
-	private static List<Node> getParents(Node node){
-		ArrayList<Node> parents = new java.util.ArrayList<Node>();
+	private static List<Node> getParents( Node node ){
+		List<Node> parents = new ArrayList<Node>();
 		
 		for (Edge edge:edges){
 			Node from = edge.getFromNode(); 
@@ -50,7 +54,7 @@ private static java.util.List<Edge> edges;
 		return parents;		
 	}
 	
-	private static List<Node> getChildren(Node node){
+	private static List<Node> getChildren( Node node ){
 		ArrayList<Node> children = new java.util.ArrayList<Node>();
 		
 		for (Edge edge:edges){
@@ -65,7 +69,7 @@ private static java.util.List<Edge> edges;
 	}
 	
 	
-	private static void CalculateCriticalPath( ) {
+	private static Boolean CalculateCriticalPath( ) {
 		HashMap<Node,Integer> inedges = new HashMap<Node,Integer>();
 		
 		for (Node node:nodes.values()){
@@ -76,6 +80,7 @@ private static java.util.List<Edge> edges;
 		ArrayList<Node> order = new ArrayList<Node>(); 
 		
 		while (inedges.keySet().size() > 0){
+			int prevlen = inedges.size();
 			for (Node node: inedges.keySet()){
 				if (inedges.get(node) == 0){
 					order.add(node);
@@ -86,11 +91,63 @@ private static java.util.List<Edge> edges;
 					inedges.remove(node);
 					break;
 				}
+				
+			}
+			if (inedges.size() == prevlen){
+				//there is a cycle
+				return false;
 			}
 		}
-		System.out.println(order);
+
 		
+		for (Node node:order){
+			if (getParents(node).size() == 0){
+				node.setEFT(node.getDuration());
+				node.setEST(0);
+			}else{
+				node.setEST(Collections.max(getParents(node), new Comparator<Node>(){
+					@Override
+					public int compare(Node arg0, Node arg1) {
+						return arg0.getEFT() - arg1.getEFT(); 
+					}
+				}).getEFT());
+				
+				node.setEFT(node.getEST() + node.getDuration());
+				// max([(i.EFT) for i in getParents(node)])
+			}
+		}
 		
+		int PFT = Collections.max(nodes.values(), new Comparator<Node>(){
+			@Override
+			public int compare(Node arg0, Node arg1) {
+				return arg0.getEFT() - arg1.getEFT(); 
+			}
+		}).getEFT();
+		
+		Collections.reverse(order);
+		for (Node node: order){
+			if (getChildren(node).size() == 0){
+				node.setLFT(PFT);
+				node.setLST(node.getLFT() - node.getDuration());
+			}else{
+				node.setLFT(Collections.min(getChildren(node), new Comparator<Node>(){
+					@Override
+					public int compare(Node arg0, Node arg1) {
+						return arg0.getLST() - arg1.getLST(); 
+					}
+				}).getLST());
+				node.setLST(node.getLFT() - node.getDuration());
+			}
+			
+		}
+		
+		for (Node node: order){
+			node.setSlack(node.getLST() - node.getEST());
+			if (node.getSlack() == 0){
+				node.setOn_critical_path(true);
+			}
+		}
+		return true;
 		
 		
 		
@@ -101,7 +158,7 @@ private static java.util.List<Edge> edges;
 		// TODO Auto-generated method stub
 		// single start node
 		// single end node
-		// not asyclic
+		// not acyclic
 		
 		return true;
 	}
