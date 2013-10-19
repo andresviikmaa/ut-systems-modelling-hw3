@@ -41,8 +41,27 @@ private static java.util.List<Edge> edges;
 		// single start node
 		// single end node
 		// not asyclic
+		Boolean foundStart = false;
+		Boolean foundEnd = false;
+		for (String key:nodes.keySet()) {
+			Node node = nodes.get(key);
+			Boolean skipStartCheck = false;
+			Boolean skipEndCheck = false;
+			for (Edge edge:edges){
+				if (edge.getToNode() == node) skipStartCheck = true;			
+				if (edge.getFromNode() == node) skipEndCheck = true;			
+			}
+			if (!skipStartCheck) {
+				if (foundStart == true) return false; // second start node
+				foundStart = true;
+			}
+			if (!skipEndCheck) {
+				if (foundEnd == true) return false; // second start node
+				foundEnd = true;
+			}
+		}
 		
-		return true;
+		return foundStart && foundEnd;
 	}
 
 	private static void GenerateDotFile( String filename ) {
