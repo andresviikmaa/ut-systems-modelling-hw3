@@ -1,18 +1,17 @@
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.io.FileOutputStream;
 import java.io.BufferedWriter;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.List;
 import java.io.Writer;
-import java.io.File;
+import java.util.Collections;
 import java.io.OutputStreamWriter;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
-
-import java.util.Collections;
+import java.util.Comparator;
+import java.io.File;
+import java.io.FileNotFoundException;
 
 public class Pert2Dot
 {

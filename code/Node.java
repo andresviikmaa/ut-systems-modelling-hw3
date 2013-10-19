@@ -86,11 +86,11 @@ public class Node
 		this.slack = slack;
 	}
 
-	public Boolean getOn_critical_path() {
+	public Boolean getOn_critical_path( ) {
 		return on_critical_path;
 	}
 
-	public void setOn_critical_path(Boolean on_critical_path) {
+	public void setOn_critical_path( Boolean on_critical_path ) {
 		this.on_critical_path = on_critical_path;
 	}
 	

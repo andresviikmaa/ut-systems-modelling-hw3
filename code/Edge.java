@@ -37,7 +37,8 @@ public class Edge
 
 
 
-	private int on_critical_path;
+	//private int on_critical_path;
+
 
 	private Node toNode;
 
@@ -45,10 +46,10 @@ public class Edge
 
 
 	private Node fromNode;
-	
-	
-	
-	
+
+
+
+
 	public String toString( ) {
 		return getFromNode().getName() +"->"+ getToNode().getName() + 
 				((fromNode.getOn_critical_path() && toNode.getOn_critical_path() )? " [color=red]":"");
