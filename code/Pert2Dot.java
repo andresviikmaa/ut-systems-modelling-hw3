@@ -167,7 +167,7 @@ private static java.util.List<Edge> edges;
 				foundStart = true;
 			}
 			if (!skipEndCheck) {
-				if (foundEnd == true) return false; // second start node
+				if (foundEnd == true) return false; // second end node
 				foundEnd = true;
 			}
 		}
