@@ -46,12 +46,11 @@ public class Edge
 
 	private Node fromNode;
 	
-	private Node to_node;
 	
 	
-	private Node from_node;
 	
 	public String toString( ) {
-		return getFromNode().getName() +"->"+ getToNode().getName();
+		return getFromNode().getName() +"->"+ getToNode().getName() + 
+				((fromNode.getOn_critical_path() && toNode.getOn_critical_path() )? " [color=red]":"");
 	}
 }

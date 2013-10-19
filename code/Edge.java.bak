@@ -9,28 +9,28 @@ public class Edge
 
 
 
-	public Node getToNode() {
+	public Node getToNode( ) {
 		return toNode;
 	}
 
 
 
 
-	public void setToNode(Node toNode) {
+	public void setToNode( Node toNode ) {
 		this.toNode = toNode;
 	}
 
 
 
 
-	public Node getFromNode() {
+	public Node getFromNode( ) {
 		return fromNode;
 	}
 
 
 
 
-	public void setFromNode(Node fromNode) {
+	public void setFromNode( Node fromNode ) {
 		this.fromNode = fromNode;
 	}
 
@@ -45,7 +45,13 @@ public class Edge
 
 
 	private Node fromNode;
-	public String toString() {
+	
+	private Node to_node;
+	
+	
+	private Node from_node;
+	
+	public String toString( ) {
 		return getFromNode().getName() +"->"+ getToNode().getName();
 	}
 }
