@@ -1,0 +1,15 @@
+digraph G  {
+task1 [shape=polygon, color="red", sides=4,label= "task1 (4 days) "]
+task2 [shape=polygon, sides=4,label= "task2 (3 days) "]
+start [shape=polygon, color="red", sides=4,label= "start (0 days) "]
+task3 [shape=polygon, color="red", sides=4,label= "task3 (2 days) "]
+task4 [shape=polygon, sides=4,label= "task4 (1 days) "]
+finalTask [shape=polygon, color="red", sides=4,label= "finalTask (3 days) "]
+start->task2
+start->task1 [color=red]
+task1->task3 [color=red]
+task2->task3
+task1->task4
+task3->finalTask [color=red]
+task4->finalTask
+}
