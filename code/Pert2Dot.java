@@ -1,12 +1,19 @@
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.io.FileOutputStream;
 import java.io.BufferedWriter;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.List;
 import java.io.Writer;
 import java.io.File;
 import java.io.OutputStreamWriter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
+
+import java.util.Collections;
 
 public class Pert2Dot
 {
@@ -31,8 +38,110 @@ private static java.util.List<Edge> edges;
 		}
 	}
 
+	
+	private static List<Node> getParents( Node node ){
+		List<Node> parents = new ArrayList<Node>();
+		
+		for (Edge edge:edges){
+			Node from = edge.getFromNode(); 
+			Node to = edge.getToNode();
+			
+			if (to == node){
+				parents.add(from);
+			}
+		}
+		
+		return parents;		
+	}
+	
+	private static List<Node> getChildren( Node node ){
+		ArrayList<Node> children = new java.util.ArrayList<Node>();
+		
+		for (Edge edge:edges){
+			Node from = edge.getFromNode(); 
+			Node to = edge.getToNode();
+			
+			if (from == node){
+				children.add(to);
+			}
+		}
+		return children;		
+	}
+	
+	
 	private static void CalculateCriticalPath( ) {
-		// TODO Auto-generated method stub
+		HashMap<Node,Integer> inedges = new HashMap<Node,Integer>();
+		
+		for (Node node:nodes.values()){
+			inedges.put(node, getParents(node).size());
+		}
+		
+		
+		ArrayList<Node> order = new ArrayList<Node>(); 
+		
+		while (inedges.keySet().size() > 0){
+			for (Node node: inedges.keySet()){
+				if (inedges.get(node) == 0){
+					order.add(node);
+					for (Node child: getChildren(node)){
+						int i = inedges.get(child);
+						inedges.put(child, i - 1 );
+					}
+					inedges.remove(node);
+					break;
+				}
+			}
+		}
+
+		
+		for (Node node:order){
+			if (getParents(node).size() == 0){
+				node.setEFT(node.getDuration());
+				node.setEST(0);
+			}else{
+				node.setEST(Collections.max(getParents(node), new Comparator<Node>(){
+					@Override
+					public int compare(Node arg0, Node arg1) {
+						return arg0.getEFT() - arg1.getEFT(); 
+					}
+				}).getEFT());
+				
+				node.setEFT(node.getEST() + node.getDuration());
+				// max([(i.EFT) for i in getParents(node)])
+			}
+		}
+		
+		int PFT = Collections.max(nodes.values(), new Comparator<Node>(){
+			@Override
+			public int compare(Node arg0, Node arg1) {
+				return arg0.getEFT() - arg1.getEFT(); 
+			}
+		}).getEFT();
+		
+		Collections.reverse(order);
+		for (Node node: order){
+			if (getChildren(node).size() == 0){
+				node.setLFT(PFT);
+				node.setLST(node.getLFT() - node.getDuration());
+			}else{
+				node.setLFT(Collections.min(getChildren(node), new Comparator<Node>(){
+					@Override
+					public int compare(Node arg0, Node arg1) {
+						return arg0.getLST() - arg1.getLST(); 
+					}
+				}).getLST());
+				node.setLST(node.getLFT() - node.getDuration());
+			}
+			
+		}
+		
+		for (Node node: order){
+			node.setSlack(node.getLST() - node.getEST());
+			if (node.getSlack() == 0){
+				node.setOn_critical_path(true);
+			}
+		}
+		
 		
 	}
 
