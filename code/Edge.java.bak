@@ -1,6 +1,6 @@
 public class Edge
 {
-	public Edge( Node fromNode, Node toNode ) {
+	public Edge(Node fromNode, Node toNode) {
 		// TODO Auto-generated constructor stub
 		from_node = fromNode;
 		to_node = toNode;
